@@ -1,25 +1,16 @@
-"""Cannon, hitting targets with projectiles.
-
-Exercises
-
-1. Keep score by counting target hits.
-2. Vary the effect of gravity.
-3. Apply gravity to the targets.
-4. Change the speed of the ball.
-"""
-
 from random import randrange
 from turtle import *
 
 from freegames import vector
+#se importan las librerías necesarias
 
-ball = vector(-200, -200)
-speed = vector(0, 0)
+ball = vector(-200, -200 # posición de la bola
+speed = vector(0, 0) # velocidad inicial, al ser tiro parabólico es 0
 targets = []
 
 
 def tap(x, y):
-    """Respond to screen tap."""
+    # responde a un clic
     if not inside(ball):
         ball.x = -199
         ball.y = -199
@@ -28,12 +19,12 @@ def tap(x, y):
 
 
 def inside(xy):
-    """Return True if xy within screen."""
+# verifica si la coordenada está dentro de los límites
     return -200 < xy.x < 200 and -200 < xy.y < 200
 
 
 def draw():
-    """Draw ball and targets."""
+    # dibuja la bola y los objetos
     clear()
 
     for target in targets:
@@ -48,21 +39,18 @@ def draw():
 
 
 def move():
-    """Move ball and targets."""
+    # mueve la bola y los objetivos
     if randrange(40) == 0:
         y = randrange(-150, 150)
         target = vector(200, y)
         targets.append(target)
 
     for target in targets:
-        target.x -= 0.25
-        #aqui se cambia la velocidad
+        target.x -= 0.25 #Asi es mas rapido
 
     if inside(ball):
-        speed.y -= 0.2
-        #aqui se cambia la velocidad
+        speed.y -= 0.35 # cambio de velocidad para simular gravedad
         ball.move(speed)
-
     dupe = targets.copy()
     targets.clear()
 
@@ -70,11 +58,16 @@ def move():
         if abs(target - ball) > 13:
             targets.append(target)
 
-    draw()
-
     for target in targets:
-        if not inside(target):
-            return
+        if not inside(target):  #en caso de que el objetivo salga de rango
+            target.x = 200       #reposicionar en el borde derecho
+            target.y = randrange(-150, 150)  # Nueva posición aleatoria
+
+    if not inside(ball):  # si la bola sale de la pantalla la guarda en un punto en específico afuera
+        ball.x = -200
+        ball.y = -200
+
+    draw()
 
     ontimer(move, 50)
 
